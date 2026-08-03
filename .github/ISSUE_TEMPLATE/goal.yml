@@ -1,0 +1,39 @@
+name: 添加目标计划
+description: 创建一个可量化、可复盘的目标
+title: "[Goal] "
+labels: ["type:goal", "status:active"]
+body:
+  - type: input
+    id: goal_title
+    attributes: { label: "目标标题 / goal_title" }
+    validations: { required: true }
+  - type: dropdown
+    id: module
+    attributes: { label: "关联模块 / module", options: [leetcode, papers, jobs, goals] }
+  - type: dropdown
+    id: period
+    attributes: { label: "目标周期 / period", options: [daily, weekly, monthly, custom, long_term] }
+  - type: input
+    id: start_at
+    attributes: { label: "开始日期 / start_at", placeholder: "2026-08-01" }
+  - type: input
+    id: due_at
+    attributes: { label: "截止日期 / due_at", placeholder: "2026-08-31" }
+  - type: input
+    id: target_value
+    attributes: { label: "目标数值 / target_value", placeholder: "30" }
+    validations: { required: true }
+  - type: input
+    id: current_value
+    attributes: { label: "当前数值 / current_value", placeholder: "0" }
+    validations: { required: true }
+  - type: input
+    id: metric
+    attributes: { label: "统计指标 / metric", placeholder: "solved_count" }
+  - type: dropdown
+    id: status
+    attributes: { label: "状态 / status", options: [todo, active, completed, archived] }
+    validations: { required: true }
+  - type: textarea
+    id: review
+    attributes: { label: "复盘 / review" }

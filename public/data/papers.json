@@ -1,0 +1,9 @@
+{
+  "generatedAt": "2026-08-03T08:00:00Z",
+  "repository": "wei1305/growth-board",
+  "records": [
+    { "id": 301, "type": "papers", "title": "EfficientVLA: Efficient Vision-Language-Action Models", "issueUrl": "https://github.com/wei1305/growth-board/issues/301", "state": "open", "archived": false, "labels": ["type:paper", "paper:reading"], "createdAt": "2026-08-01T08:00:00Z", "updatedAt": "2026-08-03T08:00:00Z", "activityDate": "2026-08-03", "authors": "Demo Authors", "venue": "CVPR", "year": "2026", "researchArea": "VLA · Efficient Inference", "status": "reading", "progress": 60, "rating": 4, "startedAt": "2026-08-01", "nextReviewAt": "2026-08-04", "summary": "通过结构和推理优化降低 VLA 模型的计算成本。" },
+    { "id": 302, "type": "papers", "title": "Attention Is All You Need", "issueUrl": "https://github.com/wei1305/growth-board/issues/302", "state": "closed", "archived": true, "labels": ["type:paper", "paper:finished"], "createdAt": "2026-07-25T08:00:00Z", "updatedAt": "2026-08-01T08:00:00Z", "activityDate": "2026-08-01", "authors": "Vaswani et al.", "venue": "NeurIPS", "year": "2017", "researchArea": "Transformer", "status": "finished", "progress": 100, "rating": 5, "startedAt": "2026-07-25", "finishedAt": "2026-08-01", "nextReviewAt": "2026-08-10", "summary": "用自注意力替代循环和卷积，建立可并行的序列建模架构。" },
+    { "id": 303, "type": "papers", "title": "Retrieval-Augmented Generation", "issueUrl": "https://github.com/wei1305/growth-board/issues/303", "state": "open", "archived": false, "labels": ["type:paper", "paper:queue"], "createdAt": "2026-07-31T08:00:00Z", "updatedAt": "2026-07-31T08:00:00Z", "activityDate": "2026-07-31", "venue": "NeurIPS", "year": "2020", "researchArea": "RAG", "status": "queue", "progress": 0, "rating": 0, "summary": "尚未开始阅读。" }
+  ]
+}

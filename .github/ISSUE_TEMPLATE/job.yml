@@ -1,0 +1,41 @@
+name: 添加求职记录
+description: 记录适合公开的岗位与流程信息
+title: "[Job] "
+labels: ["type:job", "job:saved"]
+body:
+  - type: markdown
+    attributes:
+      value: "⚠️ 公开仓库中的 Issue 对所有人可见。请勿填写私人联系方式、薪资详情、身份信息、未公开 Offer 或公司保密材料。"
+  - type: input
+    id: company
+    attributes: { label: "公司名称或匿名代号 / company" }
+    validations: { required: true }
+  - type: input
+    id: role
+    attributes: { label: "岗位 / role" }
+    validations: { required: true }
+  - type: input
+    id: location
+    attributes: { label: "地点 / location" }
+  - type: input
+    id: job_url
+    attributes: { label: "岗位链接 / job_url" }
+  - type: input
+    id: channel
+    attributes: { label: "投递渠道 / channel", placeholder: "官网 / 内推 / 招聘平台" }
+  - type: input
+    id: applied_at
+    attributes: { label: "投递日期 / applied_at", placeholder: "2026-08-03" }
+  - type: dropdown
+    id: stage
+    attributes: { label: "当前阶段 / stage", options: [saved, preparing, applied, assessment, interview, offer, rejected, withdrawn] }
+    validations: { required: true }
+  - type: input
+    id: next_step_at
+    attributes: { label: "下一步日期 / next_step_at", placeholder: "2026-08-10" }
+  - type: textarea
+    id: note
+    attributes: { label: "公开备注 / note" }
+  - type: input
+    id: result
+    attributes: { label: "最终结果 / result" }

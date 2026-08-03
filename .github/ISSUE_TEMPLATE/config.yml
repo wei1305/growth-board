@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 配置与使用说明
+    url: https://github.com/wei1305/growth-board#readme
+    about: 先阅读 README，了解模块开关、隐私和部署方式。

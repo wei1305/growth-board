@@ -1,0 +1,18 @@
+{
+  "siteName": "GrowthBoard",
+  "ownerName": "Wei",
+  "tagline": "持续记录，比偶尔冲刺更重要。",
+  "repository": "wei1305/growth-board",
+  "locale": "zh-CN",
+  "theme": "system",
+  "modules": {
+    "leetcode": true,
+    "papers": true,
+    "jobs": true,
+    "goals": true
+  },
+  "profile": {
+    "headline": "用 GitHub 记录刷题、论文、求职和目标",
+    "bio": "No server. No external database. Your GitHub repository is your personal growth database."
+  }
+}

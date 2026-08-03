@@ -1,0 +1,54 @@
+name: 添加论文记录
+description: 记录论文阅读进度、总结和复习日期
+title: "[Paper] "
+labels: ["type:paper", "paper:queue"]
+body:
+  - type: markdown
+    attributes: { value: "第一版只记录论文链接，请不要上传受版权保护的 PDF。" }
+  - type: input
+    id: paper_title
+    attributes: { label: "论文标题 / paper_title" }
+    validations: { required: true }
+  - type: input
+    id: authors
+    attributes: { label: "作者 / authors" }
+  - type: input
+    id: venue
+    attributes: { label: "会议或期刊 / venue", placeholder: "CVPR" }
+  - type: input
+    id: year
+    attributes: { label: "发表年份 / year", placeholder: "2026" }
+  - type: input
+    id: paper_url
+    attributes: { label: "论文链接 / paper_url" }
+  - type: input
+    id: code_url
+    attributes: { label: "代码链接 / code_url" }
+  - type: input
+    id: research_area
+    attributes: { label: "研究方向 / research_area", placeholder: "VLA, Efficient Inference" }
+  - type: dropdown
+    id: status
+    attributes: { label: "阅读状态 / status", options: [queue, skimming, reading, finished, review, cited] }
+    validations: { required: true }
+  - type: input
+    id: progress
+    attributes: { label: "阅读进度 / progress", placeholder: "60" }
+  - type: dropdown
+    id: rating
+    attributes: { label: "评分 / rating", options: ["1", "2", "3", "4", "5"] }
+  - type: input
+    id: started_at
+    attributes: { label: "开始日期 / started_at", placeholder: "2026-08-01" }
+  - type: input
+    id: finished_at
+    attributes: { label: "完成日期 / finished_at", placeholder: "2026-08-03" }
+  - type: input
+    id: next_review_at
+    attributes: { label: "下次复习日期 / next_review_at", placeholder: "2026-08-10" }
+  - type: textarea
+    id: summary
+    attributes: { label: "一句话总结 / summary" }
+  - type: textarea
+    id: contribution
+    attributes: { label: "核心贡献 / contribution" }

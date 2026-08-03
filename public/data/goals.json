@@ -1,0 +1,9 @@
+{
+  "generatedAt": "2026-08-03T08:00:00Z",
+  "repository": "wei1305/growth-board",
+  "records": [
+    { "id": 501, "type": "goals", "title": "本月完成 30 道算法题", "issueUrl": "https://github.com/wei1305/growth-board/issues/501", "state": "open", "archived": false, "labels": ["type:goal", "status:active"], "createdAt": "2026-08-01T08:00:00Z", "updatedAt": "2026-08-03T08:00:00Z", "activityDate": "2026-08-03", "module": "leetcode", "period": "每月", "startAt": "2026-08-01", "dueAt": "2026-08-31", "targetValue": 30, "currentValue": 18, "metric": "solved_count", "status": "active" },
+    { "id": 502, "type": "goals", "title": "完成毕业论文第三章", "issueUrl": "https://github.com/wei1305/growth-board/issues/502", "state": "open", "archived": false, "labels": ["type:goal", "status:active"], "createdAt": "2026-07-25T08:00:00Z", "updatedAt": "2026-08-02T08:00:00Z", "activityDate": "2026-08-02", "module": "papers", "period": "自定义", "startAt": "2026-07-25", "dueAt": "2026-08-15", "targetValue": 100, "currentValue": 72, "metric": "percent", "status": "active" },
+    { "id": 503, "type": "goals", "title": "完成个人简历改版", "issueUrl": "https://github.com/wei1305/growth-board/issues/503", "state": "closed", "archived": true, "labels": ["type:goal", "status:completed"], "createdAt": "2026-07-20T08:00:00Z", "updatedAt": "2026-07-31T08:00:00Z", "activityDate": "2026-07-31", "module": "jobs", "period": "每周", "startAt": "2026-07-20", "dueAt": "2026-07-31", "targetValue": 1, "currentValue": 1, "metric": "completed", "status": "completed" }
+  ]
+}

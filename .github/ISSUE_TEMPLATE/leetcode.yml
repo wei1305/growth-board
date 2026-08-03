@@ -1,0 +1,48 @@
+name: 添加刷题记录
+description: 记录一道已完成或需要复习的算法题
+title: "[LC] "
+labels: ["type:leetcode", "status:review"]
+body:
+  - type: markdown
+    attributes:
+      value: "请只填写适合公开展示的信息。提交后网站会由 GitHub Actions 自动更新。"
+  - type: input
+    id: problem_title
+    attributes: { label: "题目名称 / problem_title", placeholder: "146. LRU Cache" }
+    validations: { required: true }
+  - type: input
+    id: problem_url
+    attributes: { label: "题目链接 / problem_url", placeholder: "https://leetcode.com/problems/lru-cache/" }
+  - type: dropdown
+    id: difficulty
+    attributes: { label: "难度 / difficulty", options: [easy, medium, hard] }
+    validations: { required: true }
+  - type: input
+    id: language
+    attributes: { label: "编程语言 / language", placeholder: "Python" }
+  - type: input
+    id: topics
+    attributes: { label: "标签 / topics", description: "使用英文逗号分隔", placeholder: "Hash Table, Linked List" }
+  - type: input
+    id: solved_at
+    attributes: { label: "完成日期 / solved_at", placeholder: "2026-08-03" }
+    validations: { required: true }
+  - type: dropdown
+    id: status
+    attributes: { label: "状态 / status", options: [active, review, mastered, archived] }
+    validations: { required: true }
+  - type: dropdown
+    id: mastery
+    attributes: { label: "掌握程度 / mastery", options: ["1", "2", "3", "4", "5"] }
+  - type: input
+    id: next_review_at
+    attributes: { label: "下次复习日期 / next_review_at", placeholder: "2026-08-10" }
+  - type: textarea
+    id: summary
+    attributes: { label: "解题思路 / summary" }
+  - type: textarea
+    id: mistakes
+    attributes: { label: "错误与易错点 / mistakes" }
+  - type: input
+    id: solution_url
+    attributes: { label: "代码链接 / solution_url" }

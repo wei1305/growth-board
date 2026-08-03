@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-08-03T08:00:00Z",
+  "repository": "wei1305/growth-board",
+  "records": [
+    { "id": 401, "type": "jobs", "title": "算法工程师 · 星河科技", "issueUrl": "https://github.com/wei1305/growth-board/issues/401", "state": "open", "archived": false, "labels": ["type:job", "job:interview"], "createdAt": "2026-07-28T08:00:00Z", "updatedAt": "2026-08-03T08:00:00Z", "activityDate": "2026-08-03", "company": "星河科技", "role": "算法工程师", "location": "上海", "channel": "官网", "appliedAt": "2026-07-28", "stage": "interview", "nextStepAt": "2026-08-04", "note": "准备系统设计和模型部署。" },
+    { "id": 402, "type": "jobs", "title": "前端开发工程师 · 北辰网络", "issueUrl": "https://github.com/wei1305/growth-board/issues/402", "state": "open", "archived": false, "labels": ["type:job", "job:applied"], "createdAt": "2026-08-01T08:00:00Z", "updatedAt": "2026-08-02T08:00:00Z", "activityDate": "2026-08-02", "company": "北辰网络", "role": "前端开发工程师", "location": "杭州", "channel": "内推", "appliedAt": "2026-08-01", "stage": "applied", "nextStepAt": "2026-08-06" },
+    { "id": 403, "type": "jobs", "title": "研究实习生 · Lab X", "issueUrl": "https://github.com/wei1305/growth-board/issues/403", "state": "open", "archived": false, "labels": ["type:job", "job:saved"], "createdAt": "2026-07-30T08:00:00Z", "updatedAt": "2026-07-30T08:00:00Z", "activityDate": "2026-07-30", "company": "Lab X", "role": "研究实习生", "location": "远程", "channel": "招聘平台", "stage": "saved", "nextStepAt": "2026-08-05" },
+    { "id": 404, "type": "jobs", "title": "机器学习工程师 · 云图智能", "issueUrl": "https://github.com/wei1305/growth-board/issues/404", "state": "open", "archived": false, "labels": ["type:job", "job:offer"], "createdAt": "2026-07-18T08:00:00Z", "updatedAt": "2026-08-01T08:00:00Z", "activityDate": "2026-08-01", "company": "云图智能", "role": "机器学习工程师", "location": "北京", "channel": "校招", "appliedAt": "2026-07-18", "stage": "offer", "nextStepAt": "2026-08-08" }
+  ]
+}

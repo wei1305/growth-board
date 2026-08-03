@@ -1,0 +1,39 @@
+name: Initialize GrowthBoard labels
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create and update labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create "type:leetcode" --color "8B5CF6" --description "LeetCode record" --force
+          gh label create "type:paper" --color "3B82F6" --description "Paper record" --force
+          gh label create "type:job" --color "10B981" --description "Job record" --force
+          gh label create "type:goal" --color "F59E0B" --description "Goal record" --force
+          gh label create "status:active" --color "3B82F6" --force
+          gh label create "status:review" --color "F59E0B" --force
+          gh label create "status:completed" --color "10B981" --force
+          gh label create "status:mastered" --color "22C55E" --force
+          gh label create "difficulty:easy" --color "22C55E" --force
+          gh label create "difficulty:medium" --color "F59E0B" --force
+          gh label create "difficulty:hard" --color "EF4444" --force
+          gh label create "paper:queue" --color "CBD5E1" --force
+          gh label create "paper:reading" --color "3B82F6" --force
+          gh label create "paper:finished" --color "10B981" --force
+          gh label create "job:saved" --color "CBD5E1" --force
+          gh label create "job:applied" --color "3B82F6" --force
+          gh label create "job:interview" --color "8B5CF6" --force
+          gh label create "job:offer" --color "10B981" --force
+          gh label create "record:hidden" --color "64748B" --force
+          gh label create "record:deleted" --color "111827" --force
+          gh label create "system:invalid" --color "EF4444" --force
