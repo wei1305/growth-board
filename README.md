@@ -1,4 +1,4 @@
-# GrowthBoard
+# GrowthBoard 个人学习成长记录网站 无需服务器 仅在github运行
 
 ![GrowthBoard](./public/og.png)
 
