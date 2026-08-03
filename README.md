@@ -8,6 +8,15 @@
 
 [在线网站](https://wei1305.github.io/growth-board/) · [运行记录](https://github.com/wei1305/growth-board/actions)
 
+## 演示视频
+
+[![点击观看 GrowthBoard 演示视频](./public/og.png)](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4)
+
+[▶ 点击播放完整演示视频（MP4，约 7.1 MB）](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4) · [仓库内视频文件](./public/demo/growth-board-demo.mp4)
+
+> [!IMPORTANT]
+> **仓库要求：GrowthBoard 当前仅支持 Public 仓库。** 网站部署依赖 GitHub Pages；为保证 GitHub Free 用户可以直接启用并保持统一的部署流程，请不要将使用本项目的仓库设为 Private。
+
 ## 特点
 
 - 单仓库：源代码、配置、Issues、Actions 和 Pages 全部在一个仓库内
@@ -18,6 +27,7 @@
 - 即时回显：GitHub API 保存成功后立即更新界面，并跨刷新保留到后台部署完成
 - 响应式：桌面、平板和 375px 手机均可使用，支持深色模式
 - 最小权限：只需要绑定单仓库、仅含 Issues 读写权限的细粒度访问令牌
+- Public-only：当前安装和部署流程只支持 Public 仓库，并依赖 GitHub Pages 提供网站访问
 
 ## 工作原理
 
