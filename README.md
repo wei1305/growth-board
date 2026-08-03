@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="./README_EN.md">English</a> | <strong>简体中文</strong>
+</p>
+
 # GrowthBoard
 
 ![GrowthBoard](./public/og.png)
@@ -10,9 +14,9 @@
 
 ## 演示视频
 
-[![点击观看 GrowthBoard 演示视频](./public/og.png)](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4)
+[![点击观看 GrowthBoard 演示视频](./public/demo/growth-board-demo-cover.png)](https://wei1305.github.io/growth-board/demo/)
 
-[▶ 点击播放完整演示视频（MP4，约 7.1 MB）](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4) · [仓库内视频文件](./public/demo/growth-board-demo.mp4)
+[▶ 打开视频播放页（MP4，约 7.1 MB）](https://wei1305.github.io/growth-board/demo/) · [直接打开 MP4](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4) · [仓库内视频文件](./public/demo/growth-board-demo.mp4)
 
 > [!IMPORTANT]
 > **仓库要求：GrowthBoard 当前仅支持 Public 仓库。** 网站部署依赖 GitHub Pages；为保证 GitHub Free 用户可以直接启用并保持统一的部署流程，请不要将使用本项目的仓库设为 Private。
