@@ -195,4 +195,11 @@ growth-board/
 
 ## License
 
-[MIT](./LICENSE)
+本项目采用 [MIT License + Commons Clause](./LICENSE) 的源码公开许可。
+
+- 允许个人、教育和商业环境使用、复制、修改与分发本项目
+- 允许将本项目作为组件用于具有实质新增价值的产品
+- 禁止原封不动、仅换名称/品牌，或只做非实质修改后收费出售本项目
+- 如需销售 GrowthBoard 本身或提供本质上等同于 GrowthBoard 的收费服务，须事先获得仓库所有者的商业授权
+
+由于该许可包含销售限制，本项目属于 **source-available（源码公开）** 软件，而不是 OSI 定义的开源软件。此前已经按照 MIT License 发布的历史版本仍适用其原许可证。

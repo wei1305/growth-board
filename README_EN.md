@@ -195,4 +195,11 @@ growth-board/
 
 ## License
 
-[MIT](./LICENSE)
+This project is source-available under the [MIT License with the Commons Clause](./LICENSE).
+
+- Personal, educational, and commercial use, copying, modification, and distribution are permitted
+- The project may be used as a component of a product that adds substantial value
+- Selling the project unchanged, rebranded, or with only insubstantial modifications is prohibited
+- Selling GrowthBoard itself, or offering a paid service substantially equivalent to GrowthBoard, requires prior commercial permission from the repository owner
+
+Because this license includes a restriction on selling the software itself, the project is **source-available**, not open source as defined by the OSI. Historical versions already released under the MIT License remain governed by their original license.
