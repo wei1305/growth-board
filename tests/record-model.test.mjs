@@ -60,3 +60,34 @@ test("pending records survive refresh until deployed data catches up", () => {
   delete globalThis.localStorage;
   delete globalThis.sessionStorage;
 });
+
+function apiResponse(value) {
+  return { ok: true, status: 200, json: async () => value };
+}
+
+test("only the repository owner token can connect", async () => {
+  globalThis.fetch = async (url) => String(url).endsWith("/user")
+    ? apiResponse({ login: "visitor" })
+    : apiResponse({ full_name: "wei1305/growth-board", owner: { login: "wei1305" } });
+
+  await assert.rejects(
+    sync.validateToken("wei1305/growth-board", "visitor-token"),
+    /只有仓库所有者 wei1305 可以连接并编辑记录/,
+  );
+  delete globalThis.fetch;
+});
+
+test("record mutations recheck the repository owner", async () => {
+  const calls = [];
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url: String(url), method: init?.method || "GET" });
+    return apiResponse({ login: "visitor" });
+  };
+
+  await assert.rejects(
+    sync.createRecord("wei1305/growth-board", "visitor-token", "goals", model.defaultValues("goals")),
+    /当前仓库只允许仓库所有者 wei1305 编辑记录/,
+  );
+  assert.deepEqual(calls, [{ url: "https://api.github.com/user", method: "GET" }]);
+  delete globalThis.fetch;
+});

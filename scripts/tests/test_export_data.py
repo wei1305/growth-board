@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.export_data import build_record, parse_issue_form
+from scripts.export_data import build_record, issue_is_from_repository_owner, parse_issue_form
 
 
 class ExportDataTests(unittest.TestCase):
@@ -24,6 +24,13 @@ class ExportDataTests(unittest.TestCase):
     def test_hidden_record_is_skipped(self):
         issue = {"number": 5, "body": "", "labels": [{"name": "type:goal"}, {"name": "record:hidden"}]}
         self.assertEqual(build_record(issue), (None, None))
+
+    def test_only_repository_owner_is_an_authorized_record_author(self):
+        owner_issue = {"user": {"login": "Wei1305"}}
+        visitor_issue = {"user": {"login": "someone-else"}}
+        self.assertTrue(issue_is_from_repository_owner(owner_issue, "wei1305/growth-board"))
+        self.assertFalse(issue_is_from_repository_owner(visitor_issue, "wei1305/growth-board"))
+        self.assertFalse(issue_is_from_repository_owner({}, "wei1305/growth-board"))
 
 
 if __name__ == "__main__":

@@ -28,6 +28,10 @@ function greeting() {
   return hour < 11 ? "早上好" : hour < 14 ? "中午好" : hour < 19 ? "下午好" : "晚上好";
 }
 
+function repositoryOwner(repository: string) {
+  return repository.split("/", 1)[0] || "GitHub User";
+}
+
 function useModulePrefs(data?: LoadedData) {
   const [prefs, setPrefs] = useState<Record<ModuleKey, boolean>>(() => {
     try { return { leetcode: true, papers: true, jobs: true, goals: true, ...JSON.parse(localStorage.getItem("growthboard:modules") || "{}") }; }
@@ -106,7 +110,7 @@ function Sidebar({ data, route, enabled, navigate }: { data: LoadedData; route: 
 
 function Topbar({ data, theme, setTheme, onSearch }: { data: LoadedData; theme: string; setTheme: (theme: "light" | "dark") => void; onSearch: () => void }) {
   return <header className="topbar">
-    <div><div className="eyebrow">{new Intl.DateTimeFormat(data.config.locale, { year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(new Date())}</div><strong>{greeting()}，{data.config.ownerName}</strong></div>
+    <div><div className="eyebrow">{new Intl.DateTimeFormat(data.config.locale, { year: "numeric", month: "long", day: "numeric", weekday: "long" }).format(new Date())}</div><strong>{greeting()}，{repositoryOwner(data.config.repository)}</strong></div>
     <div className="top-actions"><button className="search-trigger" onClick={onSearch} aria-label="搜索记录"><Search size={18} /><span>搜索记录</span><kbd>⌘ K</kbd></button><button className="icon-button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="切换主题">{theme === "dark" ? <Sun size={19} /> : <Moon size={19} />}</button></div>
   </header>;
 }

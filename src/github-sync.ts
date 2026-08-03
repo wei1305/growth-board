@@ -8,6 +8,8 @@ const TOMBSTONE_KEY = "growthboard:hidden-records";
 const API = "https://api.github.com";
 
 interface GitHubIssue extends IssueLike { title: string; body?: string }
+interface GitHubUser { login: string }
+interface GitHubRepository { full_name: string; owner: GitHubUser }
 interface Tombstone { id: number; type: ModuleKey; removedAt: string }
 
 function headers(token: string) {
@@ -35,25 +37,46 @@ export function saveToken(token: string, remember: boolean) {
 }
 export function clearToken() { localStorage.removeItem(LOCAL_TOKEN_KEY); sessionStorage.removeItem(SESSION_TOKEN_KEY); window.dispatchEvent(new Event("growthboard:connection")); }
 
+function repositoryOwner(repository: string) {
+  return repository.split("/", 1)[0]?.trim().toLowerCase() || "";
+}
+
+async function requireRepositoryOwner(repository: string, token: string) {
+  const user = await request<GitHubUser>("/user", token);
+  if (user.login.toLowerCase() !== repositoryOwner(repository)) {
+    throw new Error(`当前仓库只允许仓库所有者 ${repositoryOwner(repository)} 编辑记录，当前登录账号为 ${user.login}。`);
+  }
+  return user.login;
+}
+
 export async function validateToken(repository: string, token: string) {
-  const repo = await request<{ full_name: string }>(`/repos/${repository}`, token);
+  const [repo, user] = await Promise.all([
+    request<GitHubRepository>(`/repos/${repository}`, token),
+    request<GitHubUser>("/user", token),
+  ]);
   if (repo.full_name.toLowerCase() !== repository.toLowerCase()) throw new Error("令牌连接到了错误的仓库。");
+  if (repo.owner.login.toLowerCase() !== user.login.toLowerCase()) {
+    throw new Error(`只有仓库所有者 ${repo.owner.login} 可以连接并编辑记录，当前登录账号为 ${user.login}。`);
+  }
   return repo.full_name;
 }
 
 export async function createRecord(repository: string, token: string, module: ModuleKey, values: FormValues) {
   const payload = buildIssuePayload(module, values);
+  await requireRepositoryOwner(repository, token);
   const issue = await request<GitHubIssue>(`/repos/${repository}/issues`, token, { method: "POST", body: JSON.stringify(payload) });
   return recordFromIssue(module, values, issue);
 }
 
 export async function updateRecord(repository: string, token: string, record: GrowthRecord, values: FormValues, state = record.state) {
   const payload = buildIssuePayload(record.type, values);
+  await requireRepositoryOwner(repository, token);
   const issue = await request<GitHubIssue>(`/repos/${repository}/issues/${record.id}`, token, { method: "PATCH", body: JSON.stringify({ title: payload.title, body: payload.body, state }) });
   return recordFromIssue(record.type, values, issue);
 }
 
 export async function deleteRecord(repository: string, token: string, record: GrowthRecord) {
+  await requireRepositoryOwner(repository, token);
   await request(`/repos/${repository}/issues/${record.id}/labels`, token, { method: "POST", body: JSON.stringify({ labels: ["record:deleted"] }) });
 }
 

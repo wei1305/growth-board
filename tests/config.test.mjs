@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const config = JSON.parse(await readFile(new URL("../config/site.json", import.meta.url), "utf8"));
+const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
 const modules = ["leetcode", "papers", "jobs", "goals"];
 
 test("site configuration contains every supported module switch", () => {
@@ -12,6 +13,12 @@ test("site configuration contains every supported module switch", () => {
 
 test("repository uses owner/name format", () => {
   assert.match(config.repository, /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/);
+});
+
+test("homepage owner name is derived from the configured repository", () => {
+  assert.match(app, /repositoryOwner\(data\.config\.repository\)/);
+  assert.doesNotMatch(app, /data\.config\.ownerName/);
+  assert.equal("ownerName" in config, false);
 });
 
 test("sample data envelopes are valid", async () => {

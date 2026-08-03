@@ -32,7 +32,7 @@ function ConnectionSetup({ repository, onConnected, compact = false }: { reposit
     <div className="connection-heading"><span className="connection-icon"><ShieldCheck size={21} /></span><div><strong>连接后台同步</strong><small>只需配置一次，之后所有记录都在网站内管理。</small></div></div>
     <label><span>细粒度访问令牌</span><input type="password" autoComplete="off" value={token} onChange={(event) => setToken(event.target.value)} placeholder="github_pat_…" aria-label="GitHub 细粒度访问令牌" /></label>
     <label className="remember-row"><input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} /><span>记住在当前浏览器</span></label>
-    <p className="security-copy">令牌应仅授权 <strong>{repository}</strong>，仓库权限只开启 <strong>Issues：读写</strong>。令牌不会上传到仓库或构建产物。</p>
+    <p className="security-copy">只有仓库所有者账号可以连接。令牌应仅授权 <strong>{repository}</strong>，仓库权限只开启 <strong>Issues：读写</strong>。令牌不会上传到仓库或构建产物。</p>
     {message && <p className="form-error" role="alert">{message}</p>}
     <button className="primary-link" disabled={status === "checking"}>{status === "checking" ? <LoaderCircle className="spin" size={17} /> : <Cloud size={17} />}验证并连接</button>
   </form>;

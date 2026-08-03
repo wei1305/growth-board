@@ -62,6 +62,13 @@ def record_type(labels: list[str]) -> str | None:
     return next((value for label, value in mapping.items() if label in labels), None)
 
 
+def issue_is_from_repository_owner(issue: dict[str, Any], repository: str) -> bool:
+    """Only the personal repository owner may create records consumed by the site."""
+    owner = repository.split("/", 1)[0].strip().casefold()
+    author = str((issue.get("user") or {}).get("login") or "").strip().casefold()
+    return bool(owner and author and owner == author)
+
+
 def split_topics(value: str | None) -> list[str]:
     return [part.strip() for part in re.split(r"[,，;；]", value or "") if part.strip()]
 
@@ -124,7 +131,11 @@ def fetch_issues(repository: str, token: str | None) -> list[dict[str, Any]]:
 def export(issues: list[dict[str, Any]], config: dict[str, Any], repository: str) -> dict[str, Any]:
     records: dict[str, list[dict[str, Any]]] = {"leetcode": [], "papers": [], "jobs": [], "goals": []}
     invalid: list[str] = []
+    ignored_unauthorized = 0
     for issue in issues:
+        if record_type(labels_of(issue)) and not issue_is_from_repository_owner(issue, repository):
+            ignored_unauthorized += 1
+            continue
         record, error = build_record(issue)
         if error:
             invalid.append(error)
@@ -137,7 +148,7 @@ def export(issues: list[dict[str, Any]], config: dict[str, Any], repository: str
         payload = {"generatedAt": generated_at, "repository": repository, "records": items}
         (OUTPUT_DIR / f"{kind}.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUTPUT_DIR / "invalid-records.json").write_text(json.dumps({"generatedAt": generated_at, "records": invalid}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return {"generatedAt": generated_at, "counts": {key: len(value) for key, value in records.items()}, "invalid": invalid}
+    return {"generatedAt": generated_at, "counts": {key: len(value) for key, value in records.items()}, "invalid": invalid, "ignoredUnauthorized": ignored_unauthorized}
 
 
 def main() -> int:
