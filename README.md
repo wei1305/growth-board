@@ -10,7 +10,6 @@
 
 ## 演示视频
 
-[![点击观看 GrowthBoard 演示视频](./public/og.png)](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4)
 
 [▶ 点击播放完整演示视频（MP4，约 7.1 MB）](https://wei1305.github.io/growth-board/demo/growth-board-demo.mp4) · [仓库内视频文件](./public/demo/growth-board-demo.mp4)
 
