@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState, type ComponentType } from "react";
 import {
   Activity, BookOpen, BriefcaseBusiness, CalendarClock, CheckCircle2, ChevronRight,
-  CircleDot, Code2, ExternalLink, FileText, GitBranch, Goal, Home, Menu, Moon, Plus,
-  Search, Settings, Sparkles, Sun, Target, X,
+  CircleDot, Cloud, Code2, ExternalLink, FileText, GitBranch, Goal, Home, Menu, Moon, Plus,
+  Save, Search, Settings, Sparkles, Sun, Target, X,
 } from "lucide-react";
 import { formatDate, isDue, loadData } from "./data";
+import { ConnectionCard, RecordComposer, openRecordComposer } from "./RecordComposer";
+import { mergePendingRecords, removeLoadedRecord, upsertLoadedRecord } from "./github-sync";
 import type { GoalRecord, GrowthRecord, JobRecord, LeetcodeRecord, LoadedData, ModuleKey, PaperRecord } from "./types";
 
 type Route = "dashboard" | ModuleKey | "timeline" | "settings";
@@ -51,7 +53,7 @@ export function App() {
   const [quickOpen, setQuickOpen] = useState(false);
   const { prefs, enabled, update } = useModulePrefs(data);
 
-  useEffect(() => { loadData().then(setData).catch((reason: Error) => setError(reason.message)); }, []);
+  useEffect(() => { loadData().then(mergePendingRecords).then(setData).catch((reason: Error) => setError(reason.message)); }, []);
   useEffect(() => { const handler = () => setRoute(routeFromHash()); addEventListener("hashchange", handler); return () => removeEventListener("hashchange", handler); }, []);
   useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem("growthboard:theme", theme); }, [theme]);
   useEffect(() => {
@@ -76,12 +78,13 @@ export function App() {
           {route === "timeline" && <TimelinePage data={data} enabled={enabled} />}
           {route === "settings" && <SettingsPage data={data} prefs={prefs} enabled={enabled} update={update} />}
         </main>
-        <footer><span>数据更新于 {formatDate(data.generatedAt, data.config.locale)}</span><span>GitHub Issues 是唯一数据源</span></footer>
+        <footer><span>后台数据更新于 {formatDate(data.generatedAt, data.config.locale)}</span><span>网站内即时更新 · GitHub 后台同步</span></footer>
       </div>
       <MobileNav route={route} enabled={enabled} navigate={navigate} />
       <button className="fab" onClick={() => setQuickOpen(!quickOpen)} aria-label="添加记录"><Plus size={24} /></button>
       {quickOpen && <QuickMenu repository={data.config.repository} enabled={enabled} close={() => setQuickOpen(false)} />}
       {searchOpen && <SearchDialog data={data} enabled={enabled} close={() => setSearchOpen(false)} />}
+      <RecordComposer repository={data.config.repository} onSaved={(record) => setData((current) => current ? upsertLoadedRecord(current, record) : current)} onRemoved={(record) => setData((current) => current ? removeLoadedRecord(current, record) : current)} />
     </div>
   );
 }
@@ -97,7 +100,7 @@ function Sidebar({ data, route, enabled, navigate }: { data: LoadedData; route: 
     <nav aria-label="主导航">{nav.map(({ key, label, icon: Icon }) => <button key={key} className={route === key ? "active" : ""} onClick={() => navigate(key)} aria-label={label}><Icon size={19} /><span>{label}</span></button>)}</nav>
     <div className="sidebar-spacer" />
     <button className={route === "settings" ? "active" : ""} onClick={() => navigate("settings")} aria-label="设置"><Settings size={19} /><span>设置</span></button>
-    <a className="repo-link" href={`https://github.com/${data.config.repository}`} target="_blank" rel="noreferrer"><GitBranch size={18} /><span>查看仓库</span><ExternalLink size={14} /></a>
+    <div className="repo-sync"><GitBranch size={18} /><span>后台同步</span></div>
   </aside>;
 }
 
@@ -157,34 +160,34 @@ const stageLabel: Record<string, string> = { saved: "收藏", preparing: "准备
 function JobsPage({ records, repository }: { records: JobRecord[]; repository: string }) {
   return <ModulePage title="求职进展" description="只记录适合公开的信息；敏感信息不要写入公开 Issue。" module="jobs" repository={repository} stats={[{ label: "总岗位", value: records.length }, { label: "已投递", value: records.filter((r) => !["saved", "preparing"].includes(r.stage)).length }, { label: "面试中", value: records.filter((r) => r.stage === "interview").length }, { label: "Offer", value: records.filter((r) => r.stage === "offer").length }]}>
     <div className="privacy-note"><BriefcaseBusiness size={19} /><span><strong>公开隐私提醒</strong> 请勿填写私人联系方式、薪资详情或未公开 Offer 信息。</span></div>
-    <div className="kanban">{stages.filter((stage) => records.some((r) => r.stage === stage) || ["saved", "applied", "interview", "offer"].includes(stage)).map((stage) => <section className="kanban-column" key={stage}><header><span>{stageLabel[stage]}</span><b>{records.filter((r) => r.stage === stage).length}</b></header>{records.filter((r) => r.stage === stage).map((r) => <a className="job-card" href={r.issueUrl} target="_blank" rel="noreferrer" key={r.id}><strong>{r.company}</strong><span>{r.role || "未填写岗位"}</span><small>{r.location || "地点不限"} · {formatDate(r.nextStepAt || r.appliedAt)}</small></a>)}</section>)}</div>
+    <div className="kanban">{stages.filter((stage) => records.some((r) => r.stage === stage) || ["saved", "applied", "interview", "offer"].includes(stage)).map((stage) => <section className="kanban-column" key={stage}><header><span>{stageLabel[stage]}</span><b>{records.filter((r) => r.stage === stage).length}</b></header>{records.filter((r) => r.stage === stage).map((r) => <button type="button" className="job-card" onClick={() => openRecordComposer("jobs", r)} key={r.id}><strong>{r.company}</strong><span>{r.role || "未填写岗位"}</span><small>{r.location || "地点不限"} · {formatDate(r.nextStepAt || r.appliedAt)}</small></button>)}</section>)}</div>
   </ModulePage>;
 }
 
 function GoalsPage({ records, repository }: { records: GoalRecord[]; repository: string }) {
   return <ModulePage title="目标计划" description="把长期方向拆成可量化、可复盘的进度。" module="goals" repository={repository} stats={[{ label: "目标数", value: records.length }, { label: "进行中", value: records.filter((r) => r.status === "active").length }, { label: "已完成", value: records.filter((r) => r.status === "completed").length }]}>
-    <div className="goal-list">{records.length ? records.map((r) => { const ratio = Math.min(r.currentValue / Math.max(r.targetValue, 1), 1); return <article className="goal-card" key={r.id}><div className="goal-ring" style={{ background: `conic-gradient(var(--amber) ${ratio * 360}deg, var(--line) 0)` }}><span>{Math.round(ratio * 100)}%</span></div><div><span className="eyebrow">{r.period || "目标"} · {r.metric || "进度"}</span><h3>{r.title}</h3><p>{r.currentValue} / {r.targetValue} · 截止 {formatDate(r.dueAt)}</p><a href={r.issueUrl} target="_blank" rel="noreferrer">在 GitHub 编辑 <ExternalLink size={14} /></a></div></article>; }) : <Empty text="还没有目标，先创建第一个可量化目标。" />}</div>
+    <div className="goal-list">{records.length ? records.map((r) => { const ratio = Math.min(r.currentValue / Math.max(r.targetValue, 1), 1); return <article className="goal-card" key={r.id}><div className="goal-ring" style={{ background: `conic-gradient(var(--amber) ${ratio * 360}deg, var(--line) 0)` }}><span>{Math.round(ratio * 100)}%</span></div><div><span className="eyebrow">{r.period || "目标"} · {r.metric || "进度"}</span><h3>{r.title}</h3><p>{r.currentValue} / {r.targetValue} · 截止 {formatDate(r.dueAt)}</p><button type="button" onClick={() => openRecordComposer("goals", r)}><Save size={14} />站内编辑</button></div></article>; }) : <Empty text="还没有目标，先创建第一个可量化目标。" />}</div>
   </ModulePage>;
 }
 
 function TimelinePage({ data, enabled }: { data: LoadedData; enabled: Record<ModuleKey, boolean> }) {
   const records = allRecords(data, enabled);
-  return <section><PageTitle title="成长时间轴" description="所有已启用模块的记录按活动日期汇总。" /><div className="timeline">{records.map((r) => { const Icon = moduleMeta[r.type].icon; return <a key={`${r.type}-${r.id}`} href={r.issueUrl} target="_blank" rel="noreferrer"><time>{formatDate(r.activityDate)}</time><span className={`timeline-icon ${moduleMeta[r.type].color}`}><Icon size={18} /></span><div><span className="eyebrow">{moduleMeta[r.type].label}</span><strong>{r.title}</strong><small>#{r.id} · {r.state === "closed" ? "已归档" : "活动中"}</small></div></a>; })}</div></section>;
+  return <section><PageTitle title="成长时间轴" description="所有已启用模块的记录按活动日期汇总。" /><div className="timeline">{records.map((r) => { const Icon = moduleMeta[r.type].icon; return <button type="button" key={`${r.type}-${r.id}`} onClick={() => openRecordComposer(r.type, r)}><time>{formatDate(r.activityDate)}</time><span className={`timeline-icon ${moduleMeta[r.type].color}`}><Icon size={18} /></span><div><span className="eyebrow">{moduleMeta[r.type].label}</span><strong>{r.title}</strong><small>#{r.id} · {r.state === "closed" ? "已归档" : "活动中"}</small></div></button>; })}</div></section>;
 }
 
 function SettingsPage({ data, prefs, enabled, update }: { data: LoadedData; prefs: Record<ModuleKey, boolean>; enabled: Record<ModuleKey, boolean>; update: (key: ModuleKey, value: boolean) => void }) {
-  return <section><PageTitle title="显示设置" description="你可以在当前设备隐藏模块；仓库拥有者也可以通过配置文件全局关闭模块。" /><div className="settings-grid"><div className="panel settings-panel"><PanelHead title="模块开关" subtitle="当前设备偏好会保存在浏览器中" />{(Object.keys(moduleMeta) as ModuleKey[]).map((key) => { const meta = moduleMeta[key]; const Icon = meta.icon; const globallyEnabled = data.config.modules[key]; return <label className="setting-row" key={key}><span className={`task-icon ${meta.color}`}><Icon size={18} /></span><span><strong>{meta.label}</strong><small>{globallyEnabled ? "可在本设备显示或隐藏" : "已被 config/site.json 全局关闭"}</small></span><input type="checkbox" role="switch" checked={enabled[key]} disabled={!globallyEnabled} onChange={(e) => update(key, e.target.checked)} aria-label={`显示${meta.label}模块`} /></label>; })}</div><div className="panel config-panel"><PanelHead title="全局配置" subtitle="适用于所有访问者" /><code>config/site.json</code><p>修改 <code>modules</code> 中对应字段为 <code>true</code> 或 <code>false</code>，提交后 GitHub Actions 会自动重新部署。</p><pre>{JSON.stringify({ modules: data.config.modules }, null, 2)}</pre><a className="primary-link" href={`https://github.com/${data.config.repository}/edit/main/config/site.json`} target="_blank" rel="noreferrer">在 GitHub 修改配置 <ExternalLink size={15} /></a></div></div></section>;
+  return <section><PageTitle title="网站设置" description="连接后台同步，并按需要显示或隐藏各个成长模块。" /><div className="settings-grid"><ConnectionCard repository={data.config.repository} /><div className="panel settings-panel"><PanelHead title="模块开关" subtitle="当前设备偏好会保存在浏览器中" />{(Object.keys(moduleMeta) as ModuleKey[]).map((key) => { const meta = moduleMeta[key]; const Icon = meta.icon; const globallyEnabled = data.config.modules[key]; return <label className="setting-row" key={key}><span className={`task-icon ${meta.color}`}><Icon size={18} /></span><span><strong>{meta.label}</strong><small>{globallyEnabled ? "可在本设备显示或隐藏" : "已被站点全局关闭"}</small></span><input type="checkbox" role="switch" checked={enabled[key]} disabled={!globallyEnabled} onChange={(e) => update(key, e.target.checked)} aria-label={`显示${meta.label}模块`} /></label>; })}</div><div className="panel config-panel"><PanelHead title="同步说明" subtitle="无需离开网站" /><p>新增、编辑、归档、恢复和删除都会在当前页面立即生效，并在后台同步到仓库。自动部署完成后，其他设备也会读取到最新数据。</p><pre>{JSON.stringify({ modules: data.config.modules }, null, 2)}</pre></div></div></section>;
 }
 
 function ModulePage({ title, description, module, repository, stats, children }: { title: string; description: string; module: ModuleKey; repository: string; stats: { label: string; value: number }[]; children: React.ReactNode }) {
-  return <section><PageTitle title={title} description={description} action={<a className="primary-link" href={`https://github.com/${repository}/issues/new?template=${moduleMeta[module].form}`} target="_blank" rel="noreferrer"><Plus size={17} />添加记录</a>} /><div className="module-stats">{stats.map((stat) => <div key={stat.label}><span>{stat.label}</span><strong>{stat.value}</strong></div>)}</div>{children}</section>;
+  return <section><PageTitle title={title} description={description} action={<button type="button" className="primary-link" onClick={() => openRecordComposer(module)}><Plus size={17} />添加记录</button>} /><div className="module-stats">{stats.map((stat) => <div key={stat.label}><span>{stat.label}</span><strong>{stat.value}</strong></div>)}</div>{children}</section>;
 }
 
 function Filters({ query, setQuery, children }: { query: string; setQuery: (value: string) => void; children?: React.ReactNode }) { return <div className="filters"><label><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索标题、标签或备注" /></label>{children}</div>; }
 function PageTitle({ title, description, action }: { title: string; description: string; action?: React.ReactNode }) { return <div className="page-title"><div><h1>{title}</h1><p>{description}</p></div>{action}</div>; }
 function PanelHead({ title, subtitle }: { title: string; subtitle: string }) { return <div className="panel-head"><div><h2>{title}</h2><span>{subtitle}</span></div></div>; }
 function Empty({ text, compact = false }: { text: string; compact?: boolean }) { return <div className={`empty ${compact ? "compact" : ""}`}><CircleDot size={24} /><span>{text}</span></div>; }
-function CardLinks({ record, primary, secondary }: { record: GrowthRecord; primary?: string; secondary?: string }) { return <div className="card-links">{primary && <a href={primary} target="_blank" rel="noreferrer">原始链接 <ExternalLink size={14} /></a>}{secondary && <a href={secondary} target="_blank" rel="noreferrer">代码 <ExternalLink size={14} /></a>}<a href={record.issueUrl} target="_blank" rel="noreferrer">GitHub 编辑 <ExternalLink size={14} /></a></div>; }
+function CardLinks({ record, primary, secondary }: { record: GrowthRecord; primary?: string; secondary?: string }) { return <div className="card-links">{primary && <a href={primary} target="_blank" rel="noreferrer">原始资料 <ExternalLink size={14} /></a>}{secondary && <a href={secondary} target="_blank" rel="noreferrer">代码资料 <ExternalLink size={14} /></a>}<button type="button" onClick={() => openRecordComposer(record.type, record)}><Save size={14} />站内编辑</button>{record.pending && <span className="sync-badge"><Cloud size={13} />等待后台确认</span>}</div>; }
 function MiniBars({ values }: { values: number[] }) { const max = Math.max(...values, 1); return <div className="mini-bars" aria-hidden="true">{values.map((v, i) => <i key={i} style={{ height: `${20 + v / max * 80}%` }} />)}</div>; }
 
 function Heatmap({ records }: { records: GrowthRecord[] }) {
@@ -200,8 +203,8 @@ function allRecords(data: LoadedData, enabled: Record<ModuleKey, boolean>) { ret
 function recentCounts(records: GrowthRecord[], days: number) { return Array.from({ length: days }, (_, i) => { const date = new Date(); date.setDate(date.getDate() - (days - 1 - i)); const key = date.toISOString().slice(0, 10); return records.filter((r) => r.activityDate.slice(0, 10) === key).length; }); }
 function activityStreak(records: GrowthRecord[]) { const days = new Set(records.map((r) => r.activityDate.slice(0, 10))); let count = 0; const cursor = new Date(); if (!days.has(cursor.toISOString().slice(0, 10))) cursor.setDate(cursor.getDate() - 1); while (days.has(cursor.toISOString().slice(0, 10))) { count++; cursor.setDate(cursor.getDate() - 1); } return count; }
 
-function QuickMenu({ repository, enabled, close }: { repository: string; enabled: Record<ModuleKey, boolean>; close: () => void }) { return <div className="quick-menu"><header><strong>添加记录</strong><button onClick={close} aria-label="关闭"><X size={17} /></button></header>{(Object.keys(moduleMeta) as ModuleKey[]).filter((key) => enabled[key]).map((key) => { const meta = moduleMeta[key]; const Icon = meta.icon; return <a key={key} href={`https://github.com/${repository}/issues/new?template=${meta.form}`} target="_blank" rel="noreferrer" onClick={close}><span className={`task-icon ${meta.color}`}><Icon size={18} /></span><span>添加{meta.label}记录</span><ExternalLink size={14} /></a>; })}</div>; }
-function SearchDialog({ data, enabled, close }: { data: LoadedData; enabled: Record<ModuleKey, boolean>; close: () => void }) { const [query, setQuery] = useState(""); const results = query ? allRecords(data, enabled).filter((r) => r.title.toLowerCase().includes(query.toLowerCase())).slice(0, 8) : []; return <div className="dialog-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close(); }}><section className="search-dialog" role="dialog" aria-modal="true" aria-label="全局搜索"><header><Search size={19} /><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索全部记录…" /><button onClick={close} aria-label="关闭搜索"><X size={18} /></button></header><div>{query && !results.length ? <Empty compact text="没有找到记录。" /> : results.map((r) => <a key={`${r.type}-${r.id}`} href={r.issueUrl} target="_blank" rel="noreferrer"><span className={`dot ${moduleMeta[r.type].color}`} /><span><strong>{r.title}</strong><small>{moduleMeta[r.type].label} · #{r.id}</small></span><ExternalLink size={15} /></a>)}</div></section></div>; }
+function QuickMenu({ repository, enabled, close }: { repository: string; enabled: Record<ModuleKey, boolean>; close: () => void }) { return <div className="quick-menu"><header><strong>添加记录</strong><button onClick={close} aria-label="关闭"><X size={17} /></button></header>{(Object.keys(moduleMeta) as ModuleKey[]).filter((key) => enabled[key]).map((key) => { const meta = moduleMeta[key]; const Icon = meta.icon; return <button type="button" key={key} onClick={() => { close(); openRecordComposer(key); }}><span className={`task-icon ${meta.color}`}><Icon size={18} /></span><span>添加{meta.label}记录</span><Plus size={14} /></button>; })}</div>; }
+function SearchDialog({ data, enabled, close }: { data: LoadedData; enabled: Record<ModuleKey, boolean>; close: () => void }) { const [query, setQuery] = useState(""); const results = query ? allRecords(data, enabled).filter((r) => r.title.toLowerCase().includes(query.toLowerCase())).slice(0, 8) : []; return <div className="dialog-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close(); }}><section className="search-dialog" role="dialog" aria-modal="true" aria-label="全局搜索"><header><Search size={19} /><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索全部记录…" /><button onClick={close} aria-label="关闭搜索"><X size={18} /></button></header><div>{query && !results.length ? <Empty compact text="没有找到记录。" /> : results.map((r) => <button type="button" className="search-result" key={`${r.type}-${r.id}`} onClick={() => { close(); openRecordComposer(r.type, r); }}><span className={`dot ${moduleMeta[r.type].color}`} /><span><strong>{r.title}</strong><small>{moduleMeta[r.type].label} · #{r.id}</small></span><Save size={15} /></button>)}</div></section></div>; }
 
 function MobileNav({ route, enabled, navigate }: { route: Route; enabled: Record<ModuleKey, boolean>; navigate: (route: Route) => void }) { const items: { key: Route; label: string; icon: IconType }[] = [{ key: "dashboard", label: "首页", icon: Home }, ...(["leetcode", "papers", "jobs"] as ModuleKey[]).filter((key) => enabled[key]).slice(0, 3).map((key) => ({ key, label: moduleMeta[key].label, icon: moduleMeta[key].icon })), { key: "settings", label: "更多", icon: Menu }]; return <nav className="mobile-nav" aria-label="移动导航">{items.map(({ key, label, icon: Icon }) => <button className={route === key ? "active" : ""} key={key} onClick={() => navigate(key)} aria-label={label}><Icon size={20} /><span>{label}</span></button>)}</nav>; }
 function LoadingState() { return <div className="state-screen"><span className="brand-mark">G</span><strong>正在加载 GrowthBoard</strong><div className="loader" /></div>; }
