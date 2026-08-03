@@ -2,13 +2,13 @@
   <a href="./README_EN.md">English</a> | <strong>简体中文</strong>
 </p>
 
-# GrowthBoard
+# GrowthBoard 个人学习成长记录网站 无需服务器 仅在github运行
 
 ![GrowthBoard](./public/og.png)
 
 > Your GitHub is your personal growth database.
 
-一个由 GitHub 提供后台持久化、但所有日常操作都在网站内完成的个人成长记录系统。添加、编辑、归档、恢复和删除不会跳转到 GitHub，提交成功后页面会立即更新。
+一个由 GitHub 提供后台持久化、但所有日常操作都在网站内完成的个人成长记录系统。添加、编辑、归档、恢复和删除不会跳转到 GitHub，提交成功后页面会立即更新。支持手机、平板等多种设备。
 
 [在线网站](https://wei1305.github.io/growth-board/) · [运行记录](https://github.com/wei1305/growth-board/actions)
 

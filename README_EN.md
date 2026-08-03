@@ -2,13 +2,13 @@
   <strong>English</strong> | <a href="./README.md">简体中文</a>
 </p>
 
-# GrowthBoard
+# GrowthBoard Personal Learning and Growth Tracker — Serverless, Runs Entirely on GitHub
 
 ![GrowthBoard](./public/og.png)
 
 > Your GitHub is your personal growth database.
 
-A personal growth tracking system backed by GitHub for persistence, while all daily operations are completed directly within the website. Adding, editing, archiving, restoring, and deleting records never redirects you to GitHub, and the page updates immediately after a successful submission.
+A personal growth tracking system backed by GitHub for persistence, while all daily operations are completed directly within the website. Adding, editing, archiving, restoring, and deleting records never redirects you to GitHub, and the page updates immediately after a successful submission. Supports mobile phones, tablets, and other devices.
 
 [Live Website](https://wei1305.github.io/growth-board/) · [Workflow Runs](https://github.com/wei1305/growth-board/actions)
 
